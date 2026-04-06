@@ -270,16 +270,15 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
                 style={{ left: `${seat.x}%`, top: `${seat.y}%` }}
               >
                 <div className="mb-1 flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
-                  <Grip className="h-3 w-3" />
-                  <span>{seat.label || "Tisch"}</span>
-                </div>
-                <div className="rounded-xl bg-background px-2 py-2 text-[11px] font-medium text-foreground min-h-[44px] flex items-center justify-center leading-tight">
-                  {getStudentName(seat.studentId)}
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+  <Grip className="h-3 w-3" />
+  <span>{seat.label || "Tisch"}</span>
+</div>
+<div className="mb-1 text-[10px] font-medium text-primary">
+  {seatCapacityMap[seat.id] || 2} Plätze
+</div>
+<div className="rounded-xl bg-background px-2 py-2 text-[11px] font-medium text-foreground min-h-[44px] flex items-center justify-center leading-tight">
+  {getStudentName(seat.studentId)}
+</div>
 
         <div className="rounded-2xl bg-card p-4 card-shadow">
           <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
