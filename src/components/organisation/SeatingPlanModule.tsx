@@ -315,6 +315,21 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
                 />
               </div>
               <div>
+  <Label>Sitzplätze am Tisch</Label>
+  <Select
+    value={String(seatCapacityMap[selectedSeat.id] || 2)}
+    onValueChange={(value) => updateSeatCapacity(selectedSeat.id, Number(value))}
+  >
+    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+    <SelectContent>
+      <SelectItem value="1">1 Sitzplatz</SelectItem>
+      <SelectItem value="2">2 Sitzplätze</SelectItem>
+      <SelectItem value="3">3 Sitzplätze</SelectItem>
+      <SelectItem value="4">4 Sitzplätze</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+              <div>
                 <Label>Schüler zuweisen</Label>
                 <Select
                   value={selectedSeat.studentId || "free"}
