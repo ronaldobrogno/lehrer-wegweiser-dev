@@ -245,9 +245,10 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
               <button
                 key={seat.id}
                 onClick={() => {
-                  setSelectedSeatId(seat.id);
-                  setAssignDialogOpen(true);
-                }}
+  if (planMode !== "assign") return;
+  setSelectedSeatId(seat.id);
+  setAssignDialogOpen(true);
+}}
                 onPointerDown={(e) => {
                   e.currentTarget.setPointerCapture(e.pointerId);
                   setDragMode({ seatId: seat.id, startX: e.clientX, startY: e.clientY });
