@@ -142,6 +142,16 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
     if (selectedSeatId === seatId) setSelectedSeatId(null);
     toast.success("Tisch entfernt");
   };
+  const removeSeat = (seatId: string) => {
+  setPlan((prev) => ({ ...prev, seats: prev.seats.filter((seat) => seat.id !== seatId) }));
+  setSeatCapacityMap((prev) => {
+    const next = { ...prev };
+    delete next[seatId];
+    return next;
+  });
+  if (selectedSeatId === seatId) setSelectedSeatId(null);
+  toast.success("Tisch entfernt");
+};
 
   const getStudentName = (studentId?: string) => {
     if (!studentId) return "Frei";
