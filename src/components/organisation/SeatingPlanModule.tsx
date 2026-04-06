@@ -130,6 +130,12 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
       seats: prev.seats.map((seat) => (seat.id === seatId ? { ...seat, ...patch } : seat)),
     }));
   };
+  const updateSeatCapacity = (seatId: string, capacity: number) => {
+  setSeatCapacityMap((prev) => ({
+    ...prev,
+    [seatId]: capacity,
+  }));
+};
 
   const removeSeat = (seatId: string) => {
     setPlan((prev) => ({ ...prev, seats: prev.seats.filter((seat) => seat.id !== seatId) }));
