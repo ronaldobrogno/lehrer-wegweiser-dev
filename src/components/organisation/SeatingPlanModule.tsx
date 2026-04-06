@@ -233,7 +233,11 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
             <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
               <LayoutGrid className="h-4 w-4 text-primary" /> Raumansicht
             </h2>
-            <span className="text-xs text-muted-foreground">Zum Verschieben Tisch halten und ziehen</span>
+            <span className="text-xs text-muted-foreground">
+  {planMode === "build"
+    ? "Aufbau-Modus: Tische halten und verschieben"
+    : "Zuweisungs-Modus: Tisch antippen und Schüler zuweisen"}
+</span>
           </div>
 
           <div className="relative h-[460px] w-full overflow-hidden rounded-2xl border border-border bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:24px_24px] bg-background">
