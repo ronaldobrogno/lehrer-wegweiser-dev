@@ -163,15 +163,35 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
         </Button>
 
         <div className="mb-4 grid grid-cols-2 gap-2">
-          <div className="rounded-2xl bg-card p-4 card-shadow">
-            <p className="text-xs text-muted-foreground">Tische</p>
-            <p className="mt-1 text-xl font-bold text-foreground">{plan.seats.length}</p>
-          </div>
-          <div className="rounded-2xl bg-card p-4 card-shadow">
-            <p className="text-xs text-muted-foreground">Freie Schüler</p>
-            <p className="mt-1 text-xl font-bold text-foreground">{freeStudents.length}</p>
-          </div>
-        </div>
+  <div className="rounded-2xl bg-card p-4 card-shadow">
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <School className="h-4 w-4 text-primary" />
+      Tische
+    </div>
+    <p className="mt-1 text-xl font-bold text-foreground">{totalTables}</p>
+  </div>
+  <div className="rounded-2xl bg-card p-4 card-shadow">
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <Armchair className="h-4 w-4 text-primary" />
+      Plätze gesamt
+    </div>
+    <p className="mt-1 text-xl font-bold text-foreground">{totalCapacity}</p>
+  </div>
+  <div className="rounded-2xl bg-card p-4 card-shadow">
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <UserCheck className="h-4 w-4 text-primary" />
+      Belegt
+    </div>
+    <p className="mt-1 text-xl font-bold text-foreground">{totalAssigned}</p>
+  </div>
+  <div className="rounded-2xl bg-card p-4 card-shadow">
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <Users className="h-4 w-4 text-primary" />
+      Frei
+    </div>
+    <p className="mt-1 text-xl font-bold text-foreground">{totalFreeSeats}</p>
+  </div>
+</div>
 
         <div className="mb-4 rounded-2xl bg-card p-4 card-shadow space-y-3">
           <div>
