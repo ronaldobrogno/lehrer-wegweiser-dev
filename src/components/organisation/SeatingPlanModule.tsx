@@ -193,6 +193,20 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
   </div>
 </div>
 
+        <div className="mb-4 grid grid-cols-2 gap-2">
+  <Button
+    variant={planMode === "build" ? "default" : "outline"}
+    onClick={() => setPlanMode("build")}
+  >
+    Aufbau
+  </Button>
+  <Button
+    variant={planMode === "assign" ? "default" : "outline"}
+    onClick={() => setPlanMode("assign")}
+  >
+    Zuweisen
+  </Button>
+</div>
         <div className="mb-4 rounded-2xl bg-card p-4 card-shadow space-y-3">
           <div>
             <Label>Layout wählen</Label>
