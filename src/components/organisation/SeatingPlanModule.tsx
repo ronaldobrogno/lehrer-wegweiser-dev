@@ -77,9 +77,21 @@ const [seatCapacityMap, setSeatCapacityMap] = useState<Record<string, number>>({
     saveSeatingPlan(plan);
   }, [plan]);
 
-  const assignedStudentIds = useMemo(() => plan.seats.map((s) => s.studentId).filter(Boolean) as string[], [plan]);
-  const freeStudents = students.filter((s) => !assignedStudentIds.includes(s.id));
-  const selectedSeat = plan.seats.find((s) => s.id === selectedSeatId) || null;
+  const assignedStudentIds = useMemo(
+  () => plan.seats.map((s) => s.studentId).filter(Boolean) as string[],
+  [plan]
+);
+
+const freeStudents = students.filter((s) => !assignedStudentIds.includes(s.id));
+const selectedSeat = plan.seats.find((s) => s.id === selectedSeatId) || null;
+
+const totalTables = plan.seats.length;
+const totalCapacity = plan.seats.reduce(
+  (sum, seat) => sum + (seatCapacityMap[seat.id] || 2),
+  0
+);
+const totalAssigned = assignedStudentIds.length;
+const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
 
   const applyPreset = (layout: SeatingPlan["layout"]) => {
     const preset = LAYOUT_PRESETS[layout];
