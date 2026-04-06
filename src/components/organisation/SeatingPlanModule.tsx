@@ -247,43 +247,43 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
 
             {plan.seats.map((seat) => (
   <button
-    key={seat.id}
-    onClick={() => {
-      if (planMode !== "assign") return;
-      setSelectedSeatId(seat.id);
-      setAssignDialogOpen(true);
-    }}
-    onPointerDown={(e) => {
-      if (planMode !== "build") return;
-      e.currentTarget.setPointerCapture(e.pointerId);
-      setDragMode({ seatId: seat.id, startX: e.clientX, startY: e.clientY });
-    }}
-    onPointerMove={(e) => {
-      if (!dragMode || dragMode.seatId !== seat.id) return;
-      const wrapper = (e.currentTarget.parentElement as HTMLElement).getBoundingClientRect();
-      const newX = Math.max(4, Math.min(88, ((e.clientX - wrapper.left) / wrapper.width) * 100 - 6));
-      const newY = Math.max(10, Math.min(86, ((e.clientY - wrapper.top) / wrapper.height) * 100 - 5));
-      updateSeat(seat.id, { x: Number(newX.toFixed(1)), y: Number(newY.toFixed(1)) });
-    }}
-    onPointerUp={() => setDragMode(null)}
-    className={`absolute w-[92px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border p-2 text-center shadow-sm transition-transform active:scale-95 ${
-      selectedSeatId === seat.id ? "border-primary bg-primary/10" : "border-border bg-card"
-    }`}
-    style={{ left: `${seat.x}%`, top: `${seat.y}%` }}
-  >
-    <div className="mb-1 flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
-      <Grip className="h-3 w-3" />
-      <span>{seat.label || "Tisch"}</span>
-    </div>
+  key={seat.id}
+  onClick={() => {
+    if (planMode !== "assign") return;
+    setSelectedSeatId(seat.id);
+    setAssignDialogOpen(true);
+  }}
+  onPointerDown={(e) => {
+    if (planMode !== "build") return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setDragMode({ seatId: seat.id, startX: e.clientX, startY: e.clientY });
+  }}
+  onPointerMove={(e) => {
+    if (!dragMode || dragMode.seatId !== seat.id) return;
+    const wrapper = (e.currentTarget.parentElement as HTMLElement).getBoundingClientRect();
+    const newX = Math.max(4, Math.min(88, ((e.clientX - wrapper.left) / wrapper.width) * 100 - 6));
+    const newY = Math.max(10, Math.min(86, ((e.clientY - wrapper.top) / wrapper.height) * 100 - 5));
+    updateSeat(seat.id, { x: Number(newX.toFixed(1)), y: Number(newY.toFixed(1)) });
+  }}
+  onPointerUp={() => setDragMode(null)}
+  className={`absolute w-[92px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border p-2 text-center shadow-sm transition-transform active:scale-95 ${
+    selectedSeatId === seat.id ? "border-primary bg-primary/10" : "border-border bg-card"
+  }`}
+  style={{ left: `${seat.x}%`, top: `${seat.y}%` }}
+>
+  <div className="mb-1 flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
+    <Grip className="h-3 w-3" />
+    <span>{seat.label || "Tisch"}</span>
+  </div>
 
-    <div className="mb-1 text-[10px] font-medium text-primary">
-      {seatCapacityMap[seat.id] || 2} Plätze
-    </div>
+  <div className="mb-1 text-[10px] font-medium text-primary">
+    {seatCapacityMap[seat.id] || 2} Plätze
+  </div>
 
-    <div className="rounded-xl bg-background px-2 py-2 text-[11px] font-medium text-foreground min-h-[44px] flex items-center justify-center leading-tight">
-      {getStudentName(seat.studentId)}
-    </div>
-  </button>
+  <div className="rounded-xl bg-background px-2 py-2 text-[11px] font-medium text-foreground min-h-[44px] flex items-center justify-center leading-tight">
+    {getStudentName(seat.studentId)}
+  </div>
+</button>
 ))}
                 onPointerMove={(e) => {
                   if (!dragMode || dragMode.seatId !== seat.id) return;
