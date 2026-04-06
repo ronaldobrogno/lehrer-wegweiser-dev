@@ -250,9 +250,10 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
   setAssignDialogOpen(true);
 }}
                 onPointerDown={(e) => {
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                  setDragMode({ seatId: seat.id, startX: e.clientX, startY: e.clientY });
-                }}
+  if (planMode !== "build") return;
+  e.currentTarget.setPointerCapture(e.pointerId);
+  setDragMode({ seatId: seat.id, startX: e.clientX, startY: e.clientY });
+}}
                 onPointerMove={(e) => {
                   if (!dragMode || dragMode.seatId !== seat.id) return;
                   const wrapper = (e.currentTarget.parentElement as HTMLElement).getBoundingClientRect();
