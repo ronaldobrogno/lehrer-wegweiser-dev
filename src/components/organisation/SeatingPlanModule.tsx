@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Trash2, Users, LayoutGrid, Grip } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Users, LayoutGrid, Grip, School, UserCheck, Armchair } from "lucide-react";
 import { getSeatingPlan, saveSeatingPlan, SeatingPlan, SeatPosition, Student, generateId } from "@/lib/storage";
 import { toast } from "sonner";
 
