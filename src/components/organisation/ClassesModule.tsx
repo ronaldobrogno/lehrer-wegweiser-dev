@@ -17,8 +17,9 @@ import {
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import SeatingPlanModule from "@/components/organisation/SeatingPlanModule";
 
-type View = "list" | "classDetail" | "studentDetail" | "grades";
+type View = "list" | "classDetail" | "studentDetail" | "grades" | "seating";
 
 export default function ClassesModule({ onBack }: { onBack: () => void }) {
   const [classes, setClasses] = useState<SchoolClass[]>(getClasses());
@@ -143,14 +144,17 @@ export default function ClassesModule({ onBack }: { onBack: () => void }) {
           </div>
 
           {/* Quick actions */}
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" onClick={() => { setEditStudent({ firstName: "", lastName: "", notes: "" }); setStudentDialogOpen(true); }}>
-              <Plus className="h-4 w-4 mr-1" /> Schüler
-            </Button>
-            <Button variant="outline" onClick={() => setView("grades")}>
-              <BarChart3 className="h-4 w-4 mr-1" /> Noten
-            </Button>
-          </div>
+          <div className="grid grid-cols-3 gap-2">
+  <Button variant="outline" onClick={() => { setEditStudent({ firstName: "", lastName: "", notes: "" }); setStudentDialogOpen(true); }}>
+    <Plus className="h-4 w-4 mr-1" /> Schüler
+  </Button>
+  <Button variant="outline" onClick={() => setView("grades")}>
+    <BarChart3 className="h-4 w-4 mr-1" /> Noten
+  </Button>
+  <Button variant="outline" onClick={() => setView("seating")}>
+    Sitzplan
+  </Button>
+</div>
 
           {/* Student list */}
           <div>
@@ -417,6 +421,15 @@ export default function ClassesModule({ onBack }: { onBack: () => void }) {
       </div>
     );
   }
-
+if (view === "seating" && selectedClass) {
+  return (
+    <SeatingPlanModule
+      onBack={() => setView("classDetail")}
+      classId={selectedClass.id}
+      className={selectedClass.name}
+      students={students.filter((s) => s.classId === selectedClass.id)}
+    />
+  );
+}
   return null;
 }
