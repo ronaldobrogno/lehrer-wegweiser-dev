@@ -323,11 +323,13 @@ const totalFreeSeats = Math.max(totalCapacity - totalAssigned, 0);
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="free">Kein Schüler</SelectItem>
-                    {students.map((student) => (
-                      <SelectItem key={student.id} value={student.id}>
-                        {student.firstName} {student.lastName}
-                      </SelectItem>
-                    ))}
+                    {students
+  .filter((student) => !assignedStudentIds.includes(student.id) || student.id === selectedSeat?.studentId)
+  .map((student) => (
+    <SelectItem key={student.id} value={student.id}>
+      {student.firstName} {student.lastName}
+    </SelectItem>
+  ))}
                   </SelectContent>
                 </Select>
               </div>
