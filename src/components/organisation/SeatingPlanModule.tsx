@@ -67,9 +67,11 @@ export default function SeatingPlanModule({
     getSeatingPlan(classId) || { classId, layout: "rows", seats: LAYOUT_PRESETS.rows.seats.map((s) => ({ id: generateId(), x: s.x, y: s.y })) }
   );
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
-  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
-  const [dragMode, setDragMode] = useState<DragMode>(null);
-  const [newSeatLabel, setNewSeatLabel] = useState("");
+const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+const [dragMode, setDragMode] = useState<DragMode>(null);
+const [newSeatLabel, setNewSeatLabel] = useState("");
+const [planMode, setPlanMode] = useState<PlanMode>("build");
+const [seatCapacityMap, setSeatCapacityMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
     saveSeatingPlan(plan);
