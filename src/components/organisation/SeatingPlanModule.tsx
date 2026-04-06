@@ -50,6 +50,7 @@ const LAYOUT_PRESETS: Record<SeatingPlan["layout"], { label: string; seats: Arra
 };
 
 type DragMode = { seatId: string; startX: number; startY: number } | null;
+type PlanMode = "build" | "assign";
 
 export default function SeatingPlanModule({
   onBack,
