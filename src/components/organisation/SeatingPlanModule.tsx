@@ -33,75 +33,49 @@ const LAYOUT_PRESETS: Record<
   rows: {
     label: "Reihen",
     seats: [
-      { x: 10, y: 12 },
-      { x: 38, y: 12 },
-      { x: 66, y: 12 },
-      { x: 10, y: 34 },
-      { x: 38, y: 34 },
-      { x: 66, y: 34 },
-      { x: 10, y: 56 },
-      { x: 38, y: 56 },
-      { x: 66, y: 56 },
+      { x: 14, y: 18 }, { x: 42, y: 18 }, { x: 70, y: 18 },
+      { x: 14, y: 40 }, { x: 42, y: 40 }, { x: 70, y: 40 },
+      { x: 14, y: 62 }, { x: 42, y: 62 }, { x: 70, y: 62 },
     ],
   },
   groups: {
     label: "Gruppen",
     seats: [
-      { x: 18, y: 18 },
-      { x: 34, y: 18 },
-      { x: 18, y: 32 },
-      { x: 34, y: 32 },
-      { x: 58, y: 18 },
-      { x: 74, y: 18 },
-      { x: 58, y: 32 },
-      { x: 74, y: 32 },
-      { x: 18, y: 56 },
-      { x: 34, y: 56 },
-      { x: 18, y: 70 },
-      { x: 34, y: 70 },
-      { x: 58, y: 56 },
-      { x: 74, y: 56 },
-      { x: 58, y: 70 },
-      { x: 74, y: 70 },
+      { x: 20, y: 22 }, { x: 36, y: 22 }, { x: 20, y: 36 }, { x: 36, y: 36 },
+      { x: 64, y: 22 }, { x: 80, y: 22 }, { x: 64, y: 36 }, { x: 80, y: 36 },
+      { x: 20, y: 60 }, { x: 36, y: 60 }, { x: 20, y: 74 }, { x: 36, y: 74 },
+      { x: 64, y: 60 }, { x: 80, y: 60 }, { x: 64, y: 74 }, { x: 80, y: 74 },
     ],
   },
   "u-shape": {
     label: "U-Form",
     seats: [
-      { x: 16, y: 18 },
-      { x: 16, y: 34 },
-      { x: 16, y: 50 },
-      { x: 16, y: 66 },
-      { x: 38, y: 66 },
-      { x: 52, y: 66 },
-      { x: 66, y: 66 },
-      { x: 82, y: 18 },
-      { x: 82, y: 34 },
-      { x: 82, y: 50 },
-      { x: 82, y: 66 },
+      { x: 16, y: 20 }, { x: 16, y: 36 }, { x: 16, y: 52 }, { x: 16, y: 68 },
+      { x: 34, y: 78 }, { x: 50, y: 78 }, { x: 66, y: 78 },
+      { x: 84, y: 20 }, { x: 84, y: 36 }, { x: 84, y: 52 }, { x: 84, y: 68 },
     ],
   },
   horseshoe: {
     label: "Halbkreis",
     seats: [
-      { x: 18, y: 62 },
-      { x: 28, y: 46 },
-      { x: 40, y: 32 },
-      { x: 52, y: 26 },
-      { x: 64, y: 32 },
-      { x: 76, y: 46 },
-      { x: 86, y: 62 },
+      { x: 18, y: 68 },
+      { x: 28, y: 52 },
+      { x: 40, y: 38 },
+      { x: 52, y: 32 },
+      { x: 64, y: 38 },
+      { x: 76, y: 52 },
+      { x: 86, y: 68 },
     ],
   },
   custom: {
     label: "Eigenes Layout",
     seats: [
-      { x: 20, y: 20 },
-      { x: 42, y: 20 },
-      { x: 64, y: 20 },
-      { x: 20, y: 45 },
-      { x: 42, y: 45 },
-      { x: 64, y: 45 },
+      { x: 18, y: 22 },
+      { x: 42, y: 22 },
+      { x: 66, y: 22 },
+      { x: 18, y: 50 },
+      { x: 42, y: 50 },
+      { x: 66, y: 50 },
     ],
   },
 };
@@ -154,11 +128,22 @@ export default function SeatingPlanModule({
   const [seatCapacityMap, setSeatCapacityMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
+    const nextCapacityMap: Record<string, number> = {};
+    plan.seats.forEach((seat) => {
+      if (!nextCapacityMap[seat.id]) {
+        nextCapacityMap[seat.id] = seatCapacityMap[seat.id] || 2;
+      }
+    });
+    setSeatCapacityMap((prev) => ({ ...nextCapacityMap, ...prev }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     saveSeatingPlan(plan);
   }, [plan]);
 
   const assignedStudentIds = useMemo(
-    () => plan.seats.flatMap((s) => s.studentIds || []).filter(Boolean) as string[],
+    () => plan.seats.flatMap((s: any) => s.studentIds || []).filter(Boolean) as string[],
     [plan]
   );
 
@@ -204,8 +189,8 @@ export default function SeatingPlanModule({
         ...prev.seats,
         {
           id,
-          x: 40,
-          y: 40,
+          x: 42,
+          y: 42,
           label: newSeatLabel.trim() || `Tisch ${prev.seats.length + 1}`,
           studentIds: [],
         },
@@ -235,7 +220,7 @@ export default function SeatingPlanModule({
 
     setPlan((prev) => ({
       ...prev,
-      seats: prev.seats.map((seat) => {
+      seats: prev.seats.map((seat: any) => {
         if (seat.id !== seatId) return seat;
         return {
           ...seat,
@@ -272,6 +257,20 @@ export default function SeatingPlanModule({
       .filter(Boolean);
 
     return names.length > 0 ? names.join(", ") : "Frei";
+  };
+
+  const getSeatWidth = (capacity: number) => {
+    if (capacity <= 1) return "w-[74px]";
+    if (capacity === 2) return "w-[88px]";
+    if (capacity === 3) return "w-[102px]";
+    return "w-[116px]";
+  };
+
+  const getSeatNameBoxHeight = (capacity: number) => {
+    if (capacity <= 1) return "min-h-[34px]";
+    if (capacity === 2) return "min-h-[42px]";
+    if (capacity === 3) return "min-h-[50px]";
+    return "min-h-[58px]";
   };
 
   return (
@@ -362,65 +361,75 @@ export default function SeatingPlanModule({
         </div>
 
         <div className="mb-4 rounded-[28px] bg-card p-4 card-shadow">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
               <LayoutGrid className="h-4 w-4 text-primary" />
               Raumansicht
             </h2>
 
-            <span className="text-xs text-muted-foreground">
+            <span className="text-right text-xs text-muted-foreground">
               {planMode === "build"
                 ? "Aufbau-Modus: Tische halten und verschieben"
                 : "Zuweisungs-Modus: Tisch antippen und Schüler zuweisen"}
             </span>
           </div>
 
-          <div className="relative h-[460px] w-full overflow-hidden rounded-2xl border border-border bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:24px_24px] bg-background">
-            <div className="absolute left-1/2 top-3 -translate-x-1/2 rounded-xl bg-primary/10 px-4 py-2 text-xs font-medium text-primary">
+          <div className="relative h-[560px] w-full overflow-hidden rounded-2xl border border-border bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:24px_24px] bg-background">
+            <div className="absolute left-1/2 top-4 -translate-x-1/2 rounded-xl bg-primary/10 px-4 py-2 text-xs font-medium text-primary">
               Tafel / Front
             </div>
 
-            {plan.seats.map((seat) => (
-              <button
-                key={seat.id}
-                type="button"
-                onClick={() => {
-                  if (planMode !== "assign") return;
-                  setSelectedSeatId(seat.id);
-                  setAssignDialogOpen(true);
-                }}
-                onPointerDown={(e) => {
-                  if (planMode !== "build") return;
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                  setDragMode({ seatId: seat.id });
-                }}
-                onPointerMove={(e) => {
-                  if (!dragMode || dragMode.seatId !== seat.id) return;
-                  const wrapper = (e.currentTarget.parentElement as HTMLElement).getBoundingClientRect();
-                  const newX = Math.max(4, Math.min(88, ((e.clientX - wrapper.left) / wrapper.width) * 100 - 6));
-                  const newY = Math.max(10, Math.min(86, ((e.clientY - wrapper.top) / wrapper.height) * 100 - 5));
-                  updateSeat(seat.id, { x: Number(newX.toFixed(1)), y: Number(newY.toFixed(1)) });
-                }}
-                onPointerUp={() => setDragMode(null)}
-                className={`absolute w-[110px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border p-2 text-center shadow-sm transition-transform active:scale-95 ${
-                  selectedSeatId === seat.id ? "border-primary bg-primary/10" : "border-border bg-card"
-                }`}
-                style={{ left: `${seat.x}%`, top: `${seat.y}%` }}
-              >
-                <div className="mb-1 flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
-                  <Grip className="h-3 w-3" />
-                  <span>{seat.label || "Tisch"}</span>
-                </div>
+            {plan.seats.map((seat: any) => {
+              const capacity = seatCapacityMap[seat.id] || 2;
 
-                <div className="mb-1 text-[10px] font-medium text-primary">
-                  {seatCapacityMap[seat.id] || 2} Plätze
-                </div>
+              return (
+                <button
+                  key={seat.id}
+                  type="button"
+                  onClick={() => {
+                    if (planMode !== "assign") return;
+                    setSelectedSeatId(seat.id);
+                    setAssignDialogOpen(true);
+                  }}
+                  onPointerDown={(e) => {
+                    if (planMode !== "build") return;
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    setDragMode({ seatId: seat.id });
+                  }}
+                  onPointerMove={(e) => {
+                    if (!dragMode || dragMode.seatId !== seat.id) return;
+                    const wrapper = (e.currentTarget.parentElement as HTMLElement).getBoundingClientRect();
+                    const newX = Math.max(6, Math.min(90, ((e.clientX - wrapper.left) / wrapper.width) * 100 - 6));
+                    const newY = Math.max(12, Math.min(88, ((e.clientY - wrapper.top) / wrapper.height) * 100 - 5));
+                    updateSeat(seat.id, { x: Number(newX.toFixed(1)), y: Number(newY.toFixed(1)) });
+                  }}
+                  onPointerUp={() => setDragMode(null)}
+                  className={`absolute ${getSeatWidth(
+                    capacity
+                  )} -translate-x-1/2 -translate-y-1/2 rounded-2xl border p-1.5 text-center shadow-sm transition-transform active:scale-95 ${
+                    selectedSeatId === seat.id ? "border-primary bg-primary/10" : "border-border bg-card"
+                  }`}
+                  style={{ left: `${seat.x}%`, top: `${seat.y}%` }}
+                >
+                  <div className="mb-0.5 flex items-center justify-center gap-1 text-[9px] text-muted-foreground">
+                    <Grip className="h-3 w-3" />
+                    <span>{seat.label || "Tisch"}</span>
+                  </div>
 
-                <div className="rounded-xl bg-background px-2 py-2 text-[11px] font-medium text-foreground min-h-[54px] flex items-center justify-center leading-tight">
-                  {getStudentNames(seat.studentIds)}
-                </div>
-              </button>
-            ))}
+                  <div className="mb-0.5 text-[9px] font-medium text-primary">
+                    {capacity} Plätze
+                  </div>
+
+                  <div
+                    className={`rounded-xl bg-background px-2 py-1.5 text-[10px] font-medium text-foreground ${getSeatNameBoxHeight(
+                      capacity
+                    )} flex items-center justify-center leading-tight`}
+                  >
+                    {getStudentNames(seat.studentIds)}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -527,7 +536,8 @@ export default function SeatingPlanModule({
 
               <div className="rounded-xl bg-muted/40 p-3">
                 <p className="mb-2 text-xs font-medium text-muted-foreground">
-                  Aktuell zugewiesen ({(selectedSeat.studentIds || []).length} / {seatCapacityMap[selectedSeat.id] || 2})
+                  Aktuell zugewiesen ({(selectedSeat.studentIds || []).length} /{" "}
+                  {seatCapacityMap[selectedSeat.id] || 2})
                 </p>
 
                 {selectedSeat.studentIds && selectedSeat.studentIds.length > 0 ? (
