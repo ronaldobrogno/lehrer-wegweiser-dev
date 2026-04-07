@@ -5,46 +5,103 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Trash2, Users, LayoutGrid, Grip, School, UserCheck, Armchair } from "lucide-react";
-import { getSeatingPlan, saveSeatingPlan, SeatingPlan, SeatPosition, Student, generateId } from "@/lib/storage";
+import {
+  ArrowLeft,
+  Plus,
+  Trash2,
+  Users,
+  LayoutGrid,
+  Grip,
+  School,
+  UserCheck,
+  Armchair,
+} from "lucide-react";
+import {
+  getSeatingPlan,
+  saveSeatingPlan,
+  SeatingPlan,
+  SeatPosition,
+  Student,
+  generateId,
+} from "@/lib/storage";
 import { toast } from "sonner";
 
-const LAYOUT_PRESETS: Record<SeatingPlan["layout"], { label: string; seats: Array<{ x: number; y: number }> }> = {
+const LAYOUT_PRESETS: Record<
+  SeatingPlan["layout"],
+  { label: string; seats: Array<{ x: number; y: number }> }
+> = {
   rows: {
     label: "Reihen",
     seats: [
-      { x: 10, y: 12 }, { x: 38, y: 12 }, { x: 66, y: 12 },
-      { x: 10, y: 34 }, { x: 38, y: 34 }, { x: 66, y: 34 },
-      { x: 10, y: 56 }, { x: 38, y: 56 }, { x: 66, y: 56 },
+      { x: 10, y: 12 },
+      { x: 38, y: 12 },
+      { x: 66, y: 12 },
+      { x: 10, y: 34 },
+      { x: 38, y: 34 },
+      { x: 66, y: 34 },
+      { x: 10, y: 56 },
+      { x: 38, y: 56 },
+      { x: 66, y: 56 },
     ],
   },
   groups: {
     label: "Gruppen",
     seats: [
-      { x: 18, y: 18 }, { x: 34, y: 18 }, { x: 18, y: 32 }, { x: 34, y: 32 },
-      { x: 58, y: 18 }, { x: 74, y: 18 }, { x: 58, y: 32 }, { x: 74, y: 32 },
-      { x: 18, y: 56 }, { x: 34, y: 56 }, { x: 18, y: 70 }, { x: 34, y: 70 },
-      { x: 58, y: 56 }, { x: 74, y: 56 }, { x: 58, y: 70 }, { x: 74, y: 70 },
+      { x: 18, y: 18 },
+      { x: 34, y: 18 },
+      { x: 18, y: 32 },
+      { x: 34, y: 32 },
+      { x: 58, y: 18 },
+      { x: 74, y: 18 },
+      { x: 58, y: 32 },
+      { x: 74, y: 32 },
+      { x: 18, y: 56 },
+      { x: 34, y: 56 },
+      { x: 18, y: 70 },
+      { x: 34, y: 70 },
+      { x: 58, y: 56 },
+      { x: 74, y: 56 },
+      { x: 58, y: 70 },
+      { x: 74, y: 70 },
     ],
   },
   "u-shape": {
     label: "U-Form",
     seats: [
-      { x: 16, y: 18 }, { x: 16, y: 34 }, { x: 16, y: 50 }, { x: 16, y: 66 },
-      { x: 38, y: 66 }, { x: 52, y: 66 }, { x: 66, y: 66 },
-      { x: 82, y: 18 }, { x: 82, y: 34 }, { x: 82, y: 50 }, { x: 82, y: 66 },
+      { x: 16, y: 18 },
+      { x: 16, y: 34 },
+      { x: 16, y: 50 },
+      { x: 16, y: 66 },
+      { x: 38, y: 66 },
+      { x: 52, y: 66 },
+      { x: 66, y: 66 },
+      { x: 82, y: 18 },
+      { x: 82, y: 34 },
+      { x: 82, y: 50 },
+      { x: 82, y: 66 },
     ],
   },
   horseshoe: {
     label: "Halbkreis",
     seats: [
-      { x: 18, y: 62 }, { x: 28, y: 46 }, { x: 40, y: 32 }, { x: 52, y: 26 }, { x: 64, y: 32 }, { x: 76, y: 46 }, { x: 86, y: 62 },
+      { x: 18, y: 62 },
+      { x: 28, y: 46 },
+      { x: 40, y: 32 },
+      { x: 52, y: 26 },
+      { x: 64, y: 32 },
+      { x: 76, y: 46 },
+      { x: 86, y: 62 },
     ],
   },
   custom: {
     label: "Eigenes Layout",
     seats: [
-      { x: 20, y: 20 }, { x: 42, y: 20 }, { x: 64, y: 20 }, { x: 20, y: 45 }, { x: 42, y: 45 }, { x: 64, y: 45 },
+      { x: 20, y: 20 },
+      { x: 42, y: 20 },
+      { x: 64, y: 20 },
+      { x: 20, y: 45 },
+      { x: 42, y: 45 },
+      { x: 64, y: 45 },
     ],
   },
 };
@@ -63,8 +120,20 @@ export default function SeatingPlanModule({
   className: string;
   students: Student[];
 }) {
-  const [plan, setPlan] = useState<SeatingPlan>(() =>
-    getSeatingPlan(classId) || {
+  const [plan, setPlan] = useState<SeatingPlan>(() => {
+    const existingPlan = getSeatingPlan(classId);
+
+    if (existingPlan) {
+      return {
+        ...existingPlan,
+        seats: existingPlan.seats.map((seat) => ({
+          ...seat,
+          studentIds: seat.studentIds || [],
+        })),
+      };
+    }
+
+    return {
       classId,
       layout: "rows",
       seats: LAYOUT_PRESETS.rows.seats.map((s, index) => ({
@@ -72,10 +141,10 @@ export default function SeatingPlanModule({
         x: s.x,
         y: s.y,
         label: `Tisch ${index + 1}`,
-        studentId: undefined,
+        studentIds: [],
       })),
-    }
-  );
+    };
+  });
 
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
@@ -89,7 +158,7 @@ export default function SeatingPlanModule({
   }, [plan]);
 
   const assignedStudentIds = useMemo(
-    () => plan.seats.map((s) => s.studentId).filter(Boolean) as string[],
+    () => plan.seats.flatMap((s) => s.studentIds || []).filter(Boolean) as string[],
     [plan]
   );
 
@@ -103,18 +172,26 @@ export default function SeatingPlanModule({
 
   const applyPreset = (layout: SeatingPlan["layout"]) => {
     const preset = LAYOUT_PRESETS[layout];
+    const newSeats = preset.seats.map((s, index) => ({
+      id: generateId(),
+      x: s.x,
+      y: s.y,
+      label: `${newSeatLabel || "Tisch"} ${index + 1}`,
+      studentIds: [],
+    }));
+
     setPlan({
       classId,
       layout,
-      seats: preset.seats.map((s, index) => ({
-        id: generateId(),
-        x: s.x,
-        y: s.y,
-        label: `${newSeatLabel || "Tisch"} ${index + 1}`,
-        studentId: undefined,
-      })),
+      seats: newSeats,
     });
-    setSeatCapacityMap({});
+
+    const nextCapacityMap: Record<string, number> = {};
+    newSeats.forEach((seat) => {
+      nextCapacityMap[seat.id] = 2;
+    });
+    setSeatCapacityMap(nextCapacityMap);
+
     toast.success(`Layout „${preset.label}“ geladen`);
   };
 
@@ -130,7 +207,7 @@ export default function SeatingPlanModule({
           x: 40,
           y: 40,
           label: newSeatLabel.trim() || `Tisch ${prev.seats.length + 1}`,
-          studentId: undefined,
+          studentIds: [],
         },
       ],
     }));
@@ -155,6 +232,17 @@ export default function SeatingPlanModule({
       ...prev,
       [seatId]: capacity,
     }));
+
+    setPlan((prev) => ({
+      ...prev,
+      seats: prev.seats.map((seat) => {
+        if (seat.id !== seatId) return seat;
+        return {
+          ...seat,
+          studentIds: (seat.studentIds || []).slice(0, capacity),
+        };
+      }),
+    }));
   };
 
   const removeSeat = (seatId: string) => {
@@ -173,10 +261,17 @@ export default function SeatingPlanModule({
     toast.success("Tisch entfernt");
   };
 
-  const getStudentName = (studentId?: string) => {
-    if (!studentId) return "Frei";
-    const student = students.find((s) => s.id === studentId);
-    return student ? `${student.firstName} ${student.lastName}` : "Unbekannt";
+  const getStudentNames = (studentIds?: string[]) => {
+    if (!studentIds || studentIds.length === 0) return "Frei";
+
+    const names = studentIds
+      .map((studentId) => {
+        const student = students.find((s) => s.id === studentId);
+        return student ? `${student.firstName} ${student.lastName}` : null;
+      })
+      .filter(Boolean);
+
+    return names.length > 0 ? names.join(", ") : "Frei";
   };
 
   return (
@@ -224,17 +319,11 @@ export default function SeatingPlanModule({
         </div>
 
         <div className="mb-4 grid grid-cols-2 gap-2">
-          <Button
-            variant={planMode === "build" ? "default" : "outline"}
-            onClick={() => setPlanMode("build")}
-          >
+          <Button variant={planMode === "build" ? "default" : "outline"} onClick={() => setPlanMode("build")}>
             Aufbau
           </Button>
 
-          <Button
-            variant={planMode === "assign" ? "default" : "outline"}
-            onClick={() => setPlanMode("assign")}
-          >
+          <Button variant={planMode === "assign" ? "default" : "outline"} onClick={() => setPlanMode("assign")}>
             Zuweisen
           </Button>
         </div>
@@ -294,6 +383,7 @@ export default function SeatingPlanModule({
             {plan.seats.map((seat) => (
               <button
                 key={seat.id}
+                type="button"
                 onClick={() => {
                   if (planMode !== "assign") return;
                   setSelectedSeatId(seat.id);
@@ -312,7 +402,7 @@ export default function SeatingPlanModule({
                   updateSeat(seat.id, { x: Number(newX.toFixed(1)), y: Number(newY.toFixed(1)) });
                 }}
                 onPointerUp={() => setDragMode(null)}
-                className={`absolute w-[92px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border p-2 text-center shadow-sm transition-transform active:scale-95 ${
+                className={`absolute w-[110px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border p-2 text-center shadow-sm transition-transform active:scale-95 ${
                   selectedSeatId === seat.id ? "border-primary bg-primary/10" : "border-border bg-card"
                 }`}
                 style={{ left: `${seat.x}%`, top: `${seat.y}%` }}
@@ -326,8 +416,8 @@ export default function SeatingPlanModule({
                   {seatCapacityMap[seat.id] || 2} Plätze
                 </div>
 
-                <div className="rounded-xl bg-background px-2 py-2 text-[11px] font-medium text-foreground min-h-[44px] flex items-center justify-center leading-tight">
-                  {getStudentName(seat.studentId)}
+                <div className="rounded-xl bg-background px-2 py-2 text-[11px] font-medium text-foreground min-h-[54px] flex items-center justify-center leading-tight">
+                  {getStudentNames(seat.studentIds)}
                 </div>
               </button>
             ))}
@@ -393,22 +483,38 @@ export default function SeatingPlanModule({
               <div>
                 <Label>Schüler zuweisen</Label>
                 <Select
-                  value={selectedSeat.studentId || "free"}
-                  onValueChange={(value) =>
+                  value="placeholder"
+                  onValueChange={(value) => {
+                    if (value === "free") {
+                      updateSeat(selectedSeat.id, { studentIds: [] });
+                      return;
+                    }
+
+                    const currentIds = selectedSeat.studentIds || [];
+                    const maxSeats = seatCapacityMap[selectedSeat.id] || 2;
+
+                    if (currentIds.includes(value)) return;
+
+                    if (currentIds.length >= maxSeats) {
+                      toast.error("Dieser Tisch hat bereits alle Sitzplätze belegt.");
+                      return;
+                    }
+
                     updateSeat(selectedSeat.id, {
-                      studentId: value === "free" ? undefined : value,
-                    })
-                  }
+                      studentIds: [...currentIds, value],
+                    });
+                  }}
                 >
                   <SelectTrigger className="mt-1">
-                    <SelectValue />
+                    <SelectValue placeholder="Schüler auswählen" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="free">Kein Schüler</SelectItem>
+                    <SelectItem value="free">Alle entfernen</SelectItem>
                     {students
                       .filter(
                         (student) =>
-                          !assignedStudentIds.includes(student.id) || student.id === selectedSeat.studentId
+                          !assignedStudentIds.includes(student.id) ||
+                          (selectedSeat.studentIds || []).includes(student.id)
                       )
                       .map((student) => (
                         <SelectItem key={student.id} value={student.id}>
@@ -417,6 +523,38 @@ export default function SeatingPlanModule({
                       ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="rounded-xl bg-muted/40 p-3">
+                <p className="mb-2 text-xs font-medium text-muted-foreground">
+                  Aktuell zugewiesen ({(selectedSeat.studentIds || []).length} / {seatCapacityMap[selectedSeat.id] || 2})
+                </p>
+
+                {selectedSeat.studentIds && selectedSeat.studentIds.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSeat.studentIds.map((studentId) => {
+                      const student = students.find((s) => s.id === studentId);
+                      if (!student) return null;
+
+                      return (
+                        <button
+                          key={studentId}
+                          type="button"
+                          onClick={() =>
+                            updateSeat(selectedSeat.id, {
+                              studentIds: (selectedSeat.studentIds || []).filter((id) => id !== studentId),
+                            })
+                          }
+                          className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+                        >
+                          {student.firstName} {student.lastName} ×
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground">Noch keine Schüler zugewiesen.</p>
+                )}
               </div>
             </div>
           )}
